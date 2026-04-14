@@ -1,46 +1,46 @@
-import { Image as ImageProps } from "../../types/Image/types";
-import { useCallback, useEffect, useState } from "react";
+import React, { ImgHTMLAttributes, useEffect, useState } from "react";
 
-const normalizeSrc = (src?: string | Blob): string => {
-    if (!src) return "";
-
-    if (typeof src === "string") return src;
-
-    return URL.createObjectURL(src);
+type ImageProps = ImgHTMLAttributes<HTMLImageElement> & {
+    placeholderImg?: string;
+    errorImg?: string;
 };
 
-export default function Image({
-                                  src,
-                                  placeholderImg,
-                                  errorImg,
-                                  ...props
-                              }: ImageProps) {
-    const [imgSrc, setSrc] = useState<string>(
-        normalizeSrc(placeholderImg || src)
+const Image: React.FC<ImageProps> = ({
+                                         src,
+                                         placeholderImg,
+                                         errorImg,
+                                         ...props
+                                     }) => {
+    const [imgSrc, setImgSrc] = useState<string>(
+        placeholderImg || (typeof src === "string" ? src : "")
     );
 
-    const onLoad = useCallback(() => {
-        setSrc(normalizeSrc(src));
-    }, [src]);
-
-    const onError = useCallback(() => {
-        setSrc(normalizeSrc(errorImg || placeholderImg));
-    }, [errorImg, placeholderImg]);
-
     useEffect(() => {
-        const image = new window.Image();
+        if (typeof src !== "string" || !src) {
+            setImgSrc(errorImg || placeholderImg || "");
+            return;
+        }
 
-        const normalized = normalizeSrc(src);
-        image.src = normalized;
+        const img = new window.Image();
+        img.src = src;
 
-        image.addEventListener("load", onLoad);
-        image.addEventListener("error", onError);
+        img.onload = () => {
+            setImgSrc(src);
+        };
+
+        img.onerror = () => {
+            setImgSrc(errorImg || placeholderImg || "");
+        };
 
         return () => {
-            image.removeEventListener("load", onLoad);
-            image.removeEventListener("error", onError);
+            img.onload = null;
+            img.onerror = null;
         };
-    }, [src, onLoad, onError]);
+    }, [src, errorImg, placeholderImg]);
 
-    return <img {...props} alt="" src={imgSrc} />;
-}
+    if (!imgSrc) return null;
+
+    return <img {...props} src={imgSrc} alt={props.alt ?? ""} />;
+};
+
+export default Image;

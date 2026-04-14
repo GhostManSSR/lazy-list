@@ -7,7 +7,11 @@ import { GrView } from "react-icons/gr";
 
 
 const BlockNews: React.FC<{ news: NewsBlockProps }> = ({ news }) => {
-    const image = getImageUrl(news.cover.images?.[0]?.hd);
+    const rawImage = news.cover.images?.[0]?.hd;
+
+    const image = rawImage
+        ? getImageUrl(rawImage)
+        : "/placeholder.png";
 
     const rubric = news.rubrics?.[0]?.name;
 
