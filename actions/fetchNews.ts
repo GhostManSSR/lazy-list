@@ -4,10 +4,11 @@ import { FetchNewsResponse } from "@/types/News/types";
 const PER_PAGE = 3;
 
 export const fetchNews = async (
-    pageNumber: number
+    pageNumber: number,
+    perPage: number = PER_PAGE
 ): Promise<FetchNewsResponse> => {
     const res = await HttpProvider.get<FetchNewsResponse>(
-        `/api/news?page=${pageNumber}`
+        `/api/news?page=${pageNumber}&perPage=${perPage}`
     );
 
     return {

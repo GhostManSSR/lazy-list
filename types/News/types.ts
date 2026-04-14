@@ -23,6 +23,8 @@ export type Derection = {
      slug: string;
 }
 
+export type NewsTypeVariant = "news" | "business" | "important";
+
 export interface News {
     id: string;
 
