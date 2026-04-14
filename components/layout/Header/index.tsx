@@ -1,6 +1,6 @@
 import {Header as HeaderProps} from "@/types/layout/types";
 import Logo from "@/components/layout/Logo";
-import styles from "../../../asserts/components/layout/Header/index.module.less"
+import styles from "../../../assets/components/layout/Header/index.module.less"
 
 const Header: React.FC<HeaderProps> = (props) => {
 

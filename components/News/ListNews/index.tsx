@@ -3,9 +3,8 @@ import HttpProvider from "@/HttpProvider";
 import BlockNews from "@/components/News/BlockNews";
 import { News as NewsType } from "../../../types/News/types";
 import {fetchNews} from "@/actions/fetchNews";
-import Loading from "@/asserts/components/layout/Loading";
 import LoadingSpin from "@/components/layout/LoadingSpin";
-import styles from "../../../asserts/components/News/NewsList/index.module.less"
+import styles from "../../../assets/components/News/NewsList/index.module.less"
 import Button from "@/components/layout/Button";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Skeleton from "@/components/layout/Skeleton";

@@ -1,6 +1,6 @@
 import Image from "@/components/Image";
 import React from "react";
-import styles from "../../../asserts/components/layout/Logo/index.module.less"
+import styles from "../../../assets/components/layout/Logo/index.module.less"
 
 const Logo:React.FC<{}> = () => {
 

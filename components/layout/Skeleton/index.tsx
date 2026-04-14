@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../../asserts/components/Skeleton/index.module.less";
+import styles from "../../../assets/components/Skeleton/index.module.less";
 
 const Skeleton: React.FC = () => {
     return (

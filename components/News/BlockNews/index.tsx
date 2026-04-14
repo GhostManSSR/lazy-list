@@ -1,7 +1,7 @@
 import {News as NewsBlockProps} from "@/types/News/types";
 import {getImageUrl} from "@/HttpProvider";
 import Image from "@/components/Image";
-import styles from "../../../asserts/components/News/NewsBlock/index.module.less"
+import styles from "../../../assets/components/News/NewsBlock/index.module.less"
 import { FcLike } from "react-icons/fc";
 import { GrView } from "react-icons/gr";
 

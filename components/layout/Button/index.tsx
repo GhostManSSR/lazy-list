@@ -1,5 +1,5 @@
 import { Button as ButtonProps } from "@/types/layout/types";
-import styles from "../../../asserts/components/layout/Button/index.module.less"
+import styles from "../../../assets/components/layout/Button/index.module.less"
 
 const Button: React.FC<ButtonProps> = (props) => {
     const Icon = props.icon;

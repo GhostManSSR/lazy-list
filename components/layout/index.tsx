@@ -2,8 +2,7 @@ import {Layout as LayoutProps} from "../../types/layout/types"
 import Header from "@/components/layout/Header";
 import React from "react";
 import Footer from "@/components/layout/Footer";
-import styles from '../../asserts/components/layout/index.module.less'
-import {Head} from "next/document";
+import styles from '../../assets/components/layout/index.module.less'
 
 const Layout: React.FC<LayoutProps> = (props) => {
 

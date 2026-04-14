@@ -1,5 +1,5 @@
 import Logo from "@/components/layout/Logo";
-import styles from "../../../asserts/components/layout/Footer/index.module.less"
+import styles from "../../../assets/components/layout/Footer/index.module.less"
 
 const Footer:React.FC<{}> = () => {
 

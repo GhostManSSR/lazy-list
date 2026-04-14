@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../../asserts/components/layout/LoadingSpin/index.module.less"
+import styles from "../../../assets/components/layout/LoadingSpin/index.module.less"
 
 
 const LoadingSpin: React.FC = () => {
