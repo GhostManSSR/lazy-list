@@ -32,7 +32,7 @@ export interface News {
 
     rubrics: Rubric[];
 
-    directions: Derection;
+    directions: Derection[];
 
     isBreaking: boolean;
     isImportant: boolean;
