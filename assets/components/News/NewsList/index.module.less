@@ -8,6 +8,15 @@
     margin-bottom: 50px;
   }
 
+  &-title{
+    .font('Montserrat', 32px, 800);
+    color: #181A1F;
+
+    @media(max-width: 420px){
+      font-size: 24px;
+    }
+  }
+
   &-loader{
     display: flex;
   }
@@ -17,11 +26,6 @@
     flex-direction: column;
     margin-bottom: 25px;
     border-bottom: 2px solid #E2E2E4;
-
-    > h2{
-      color: #181A1F;
-      .font('Montserrat', 32px, 800);
-    }
 
     > span{
       color: #85888E;
@@ -47,9 +51,6 @@
   display: flex;
   justify-content: end;
   margin-top: 20px;
-  gap:10px;
-  padding-left: 20px;
-  padding-right: 20px;
   align-items: center;
 
   &-pages{
