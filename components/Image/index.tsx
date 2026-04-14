@@ -5,6 +5,8 @@ type ImageProps = ImgHTMLAttributes<HTMLImageElement> & {
     errorImg?: string;
 };
 
+const DEFAULT_PLACEHOLDER = "https://placehold.co/600x400?text=No+Image";
+
 const Image: React.FC<ImageProps> = ({
                                          src,
                                          placeholderImg,
@@ -12,12 +14,12 @@ const Image: React.FC<ImageProps> = ({
                                          ...props
                                      }) => {
     const [imgSrc, setImgSrc] = useState<string>(
-        placeholderImg || (typeof src === "string" ? src : "")
+        placeholderImg || (typeof src === "string" ? src : DEFAULT_PLACEHOLDER)
     );
 
     useEffect(() => {
         if (typeof src !== "string" || !src) {
-            setImgSrc(errorImg || placeholderImg || "");
+            setImgSrc(errorImg || placeholderImg || DEFAULT_PLACEHOLDER);
             return;
         }
 
@@ -29,7 +31,7 @@ const Image: React.FC<ImageProps> = ({
         };
 
         img.onerror = () => {
-            setImgSrc(errorImg || placeholderImg || "");
+            setImgSrc(errorImg || placeholderImg || DEFAULT_PLACEHOLDER);
         };
 
         return () => {
@@ -38,9 +40,13 @@ const Image: React.FC<ImageProps> = ({
         };
     }, [src, errorImg, placeholderImg]);
 
-    if (!imgSrc) return null;
-
-    return <img {...props} src={imgSrc || "https://picsum.photos/600/400"} alt={props.alt ?? ""} />;
+    return (
+        <img
+            {...props}
+            src={imgSrc}
+            alt={props.alt ?? ""}
+        />
+    );
 };
 
 export default Image;
