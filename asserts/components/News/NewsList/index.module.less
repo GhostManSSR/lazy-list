@@ -1,0 +1,58 @@
+@import "../../../fonts";
+
+.news{
+
+  &-container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+  }
+
+  &-loader{
+    display: flex;
+  }
+
+  &-header{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #E2E2E4;
+
+    > h2{
+      color: #181A1F;
+      .font('Montserrat', 32px, 800);
+    }
+
+    > span{
+      color: #85888E;
+      .font('Montserrat', 16px, 600);
+      margin-bottom: 20px;
+    }
+  }
+
+  &-list{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &-paggination{
+    display: flex;
+
+  }
+}
+
+.pagination{
+  display: flex;
+  justify-content: end;
+  margin-top: 20px;
+  gap:10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+
+  &-pages{
+    .font('Montserrat', 16px, 400);
+  }
+}
