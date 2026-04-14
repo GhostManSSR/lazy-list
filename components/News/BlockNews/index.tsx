@@ -34,8 +34,6 @@ const BlockNews: React.FC<Props> = ({ news, type = "news", showImage }) => {
         return formatted.charAt(0).toUpperCase() + formatted.slice(1);
     };
 
-    console.log(type)
-
     if(type === "business") {
         return(
             <div className={styles.business__block}>

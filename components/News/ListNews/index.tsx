@@ -1,57 +1,54 @@
 import { useEffect, useState } from "react";
-import HttpProvider from "@/HttpProvider";
 import BlockNews from "@/components/News/BlockNews";
-import {News as NewsType, NewsTypeVariant} from "../../../types/News/types";
-import {fetchNews} from "@/actions/fetchNews";
-import LoadingSpin from "@/components/layout/LoadingSpin";
-import styles from "../../../assets/components/News/NewsList/index.module.less"
 import Button from "@/components/layout/Button";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Skeleton from "@/components/layout/Skeleton";
+import LoadingSpin from "@/components/layout/LoadingSpin";
 import Empty from "@/components/layout/Empty";
+
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
+import { NewsTypeVariant } from "@/types/News/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchNewsThunk } from "@/store/thunks/fetchNewsThunk";
+
+import styles from "../../../assets/components/News/NewsList/index.module.less";
 
 type Props = {
     type?: NewsTypeVariant;
     showImage?: boolean;
 };
 
-const ListNews: React.FC<Props> = ({type = "news", showImage}) => {
-    const [news, setNews] = useState<NewsType[]>([]);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [date, setDate] = useState<string | null>(null);
+const getPerPage = (type: NewsTypeVariant) => {
+    switch (type) {
+        case "news":
+            return 2;
+        case "business":
+            return 3;
+        case "important":
+            return 2;
+        default:
+            return 2;
+    }
+};
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+const ListNews: React.FC<Props> = ({ type = "news", showImage }) => {
+    const dispatch = useAppDispatch();
+
+    const [page, setPage] = useState<number>(1);
+
+    const cached = useAppSelector(
+        (state) => state.news.cache?.[type]?.[page]
+    );
+
+    const loading = useAppSelector((state) => state.news.loading);
+
+    const news = cached?.news ?? [];
+    const totalPages = cached?.totalPages ?? 1;
+    const date = cached?.minDatePublication ?? null;
 
     useEffect(() => {
-        const load = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                let res;
-
-                if (type === "news") {
-                    res = await fetchNews(page, 2);
-                } else if (type === "business") {
-                    res = await fetchNews(page, 3);
-                } else{
-                    return;
-                }
-
-                setNews(res.news);
-                setDate(res.minDatePublication);
-                setTotalPages(res.totalPages);
-            } catch (e) {
-                setError("Не удалось загрузить новости");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        load();
-    }, [page]);
+        dispatch(fetchNewsThunk(type, page, getPerPage(type)));
+    }, [dispatch, type, page]);
 
     const formatPrettyDate = (dateString?: string | null) => {
         if (!dateString) return "";
@@ -66,49 +63,52 @@ const ListNews: React.FC<Props> = ({type = "news", showImage}) => {
     return (
         <div className={styles["news-container"]}>
             <div className={styles["news-header"]}>
-                <h2 className={styles["news-title"]}>{type === "news" ? "Новости компании" : type==="important" ? "Важные новости" : "Бизнес"}</h2>
+                <h2 className={styles["news-title"]}>
+                    {type === "news"
+                        ? "Новости компании"
+                        : type === "important"
+                            ? "Важные новости"
+                            : "Бизнес"}
+                </h2>
+
                 {date && <span>{formatPrettyDate(date)}</span>}
             </div>
 
             {loading && (
                 <div className={styles["news-loader"]}>
                     <Skeleton />
-                    <LoadingSpin/>
+                    <LoadingSpin />
                 </div>
             )}
 
-            {error && (
-                <div className="error">
-                    <p>{error}</p>
-                </div>
-            )}
-
-            {!loading && !error && news.length === 0 && (
-                <Empty />
-            )}
+            {!loading && news.length === 0 && <Empty />}
 
             <div className={styles["news-list"]}>
                 {!loading &&
-                    !error &&
                     news.map((item, index) => (
-                        <BlockNews key={item.id} news={item} type={type} showImage={showImage ? index === 0 : false}/>
+                        <BlockNews
+                            key={item.id}
+                            news={item}
+                            type={type}
+                            showImage={showImage ? index === 0 : false}
+                        />
                     ))}
             </div>
 
-            {!error && news.length !== 0 && (
+            {!loading && news.length > 0 && (
                 <div className={styles["pagination"]}>
                     <Button
                         onClick={() => setPage((p) => p - 1)}
-                        disabled={page === 1 || loading}
+                        disabled={page === 1}
                         classList={["button__pagination"]}
                         icon={FaArrowLeft}
                     />
                     <Button
                         onClick={() => setPage((p) => p + 1)}
-                        disabled={page === totalPages || loading}
+                        disabled={page === totalPages}
                         classList={["button__pagination"]}
                         icon={FaArrowRight}
-                   />
+                    />
                 </div>
             )}
         </div>
