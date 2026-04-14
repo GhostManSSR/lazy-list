@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import HttpProvider from "@/HttpProvider";
 import BlockNews from "@/components/News/BlockNews";
-import { News as NewsType } from "../../../types/News/types";
+import {News as NewsType, NewsTypeVariant} from "../../../types/News/types";
 import {fetchNews} from "@/actions/fetchNews";
 import LoadingSpin from "@/components/layout/LoadingSpin";
 import styles from "../../../assets/components/News/NewsList/index.module.less"
 import Button from "@/components/layout/Button";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Skeleton from "@/components/layout/Skeleton";
+import Empty from "@/components/layout/Empty";
 
-const ListNews: React.FC = () => {
+type Props = {
+    type?: NewsTypeVariant;
+    showImage?: boolean;
+};
+
+const ListNews: React.FC<Props> = ({type = "news", showImage}) => {
     const [news, setNews] = useState<NewsType[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -24,7 +30,15 @@ const ListNews: React.FC = () => {
                 setLoading(true);
                 setError(null);
 
-                const res = await fetchNews(page);
+                let res;
+
+                if (type === "news") {
+                    res = await fetchNews(page, 2);
+                } else if (type === "business") {
+                    res = await fetchNews(page, 3);
+                } else{
+                    return;
+                }
 
                 setNews(res.news);
                 setDate(res.minDatePublication);
@@ -52,7 +66,7 @@ const ListNews: React.FC = () => {
     return (
         <div className={styles["news-container"]}>
             <div className={styles["news-header"]}>
-                <h2>Новости компании</h2>
+                <h2 className={styles["news-title"]}>{type === "news" ? "Новости компании" : type==="important" ? "Важные новости" : "Бизнес"}</h2>
                 {date && <span>{formatPrettyDate(date)}</span>}
             </div>
 
@@ -70,20 +84,18 @@ const ListNews: React.FC = () => {
             )}
 
             {!loading && !error && news.length === 0 && (
-                <div className="empty">
-                    <p>Новостей пока нет</p>
-                </div>
+                <Empty />
             )}
 
             <div className={styles["news-list"]}>
                 {!loading &&
                     !error &&
-                    news.map((item) => (
-                        <BlockNews key={item.id} news={item} />
+                    news.map((item, index) => (
+                        <BlockNews key={item.id} news={item} type={type} showImage={showImage ? index === 0 : false}/>
                     ))}
             </div>
 
-            {!error && (
+            {!error && news.length !== 0 && (
                 <div className={styles["pagination"]}>
                     <Button
                         onClick={() => setPage((p) => p - 1)}
@@ -91,11 +103,6 @@ const ListNews: React.FC = () => {
                         classList={["button__pagination"]}
                         icon={FaArrowLeft}
                     />
-
-                    <span className={styles["pagination-pages"]}>
-                        {page} / {totalPages}
-                    </span>
-
                     <Button
                         onClick={() => setPage((p) => p + 1)}
                         disabled={page === totalPages || loading}
