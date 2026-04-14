@@ -40,7 +40,7 @@ const Image: React.FC<ImageProps> = ({
 
     if (!imgSrc) return null;
 
-    return <img {...props} src={imgSrc} alt={props.alt ?? ""} />;
+    return <img {...props} src={imgSrc || "https://picsum.photos/600/400"} alt={props.alt ?? ""} />;
 };
 
 export default Image;
