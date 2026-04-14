@@ -1,40 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Lazy List
 
-## Getting Started
+SPA для отображения новостей с поддержкой категорий (news / business / important), пагинации, кастомных UI-компонентов, адаптивного интерфейса и кеширование.
 
-First, run the development server:
+---
+
+## Демо
+
+Проект доступен по ссылке:
+
+https://lazy-list-mu.vercel.app/
+
+> Изображения могут не загружаться даже при использовании proxy  
+> Причина: ограничения CORS и политика внешнего API в HTTPS-окружении (Vercel)
+
+---
+
+## Установка и запуск проекта
+
+### 1. Клонирование репозитория
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/GhostManSSR/lazy-list
+cd lazy-list
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Установка зависимостей и запуск проекта
+```bash
+npm install
+npm run dev
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Краткое описание принятых решений
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Архитектура проекта
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+- Проект реализован на **Next.js + TypeScript (v16)**
+- Используется **LESS Modules** для стилизации компонентов
+- Настроен кастомный Webpack для корректной работы LESS в Next.js
+- Добавлены типы:
+    - `global.d.ts`
+    - `/types/styles.d.ts`
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+### UI и структура приложения
 
-To learn more about Next.js, take a look at the following resources:
+- Реализован общий `Layout` (Header / Footer / Content)
+- UI разбит на переиспользуемые компоненты:
+    - `BlockNews` — карточка новости
+    - `ListNews` — список новостей с пагинацией
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Основная цель — соблюдение принципа **DRY** и переиспользуемости компонентов
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### Работа с API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Создан единый слой запросов — `HttpProvider`
+- Реализована абстракция для HTTP-запросов:
+    - GET / POST / PUT / DELETE
+- Заложена возможность расширения под авторизацию (token)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- Отдельно выделена бизнес-логика:
+    - `fetchNews` как слой получения данных
+
+---
+
+### Этапы разработки
+
+- Сначала реализован базовый Layout и структура приложения
+- Далее подключён API слой и вывод данных
+- Затем выполнено переиспользование компонентов (`BlockNews`, `ListNews`)
+- Принято решение унифицировать отображение новостей через единый компонент
+
+---
+
+### Проблемы и решения при деплое
+
+- При деплое на Vercel выявлена проблема с **CORS**
+- HTTPS окружение оказалось строже к внешним запросам
+- Было добавлено proxy-решение, однако оно не полностью решило проблему
+- В итоге часть данных адаптирована под fallback-логику (например, отсутствие даты в некоторых случаях)
+
+---
+
+## Особенности
+
+### UI / UX
+
+- Добавлен эффект свечения для `rubric` и `directions`
+- Реализован общий `Layout` (Header + Footer + Content)
+- Единый стиль интерфейса и переиспользуемая структура компонентов
+
+---
+
+### Типографика
+
+- Подключён шрифт **Montserrat**
+- Добавлен fallback через `<Head>` для стабильной загрузки
+
+---
+
+### Состояния загрузки
+
+- Skeleton-прелоадер перед загрузкой данных
+- LoadingSpin для индикации активного запроса
+- Empty state для пустых данных
+
+---
+
+### Работа с изображениями
+
+- Lazy-loading изображений
+- Оптимизирован компонент `Image`
+- Снижение лишних перерендеров и запросов
+
+---
+
+### Оптимизация и кэширование
+
+- Кэширование страниц через **Redux Toolkit**
+- Middleware слой для перехвата запросов
+- Уже загруженные страницы не запрашиваются повторно
+- Ускоренная навигация между страницами
+
+---
+
+## Развитие проекта
+
+- Добавление поиска по новостям (search / фильтрация по заголовкам и категориям)
+- Возможный переход на **RTK Query** для упрощения работы с API и кэшированием
+- Оптимизация работы с Redux (избежание избыточного хранения страниц в store)
+- Пересмотр стратегии загрузки данных (ленивая загрузка / infinite scroll)
+- Улучшение структуры состояния для более масштабируемого хранения данных
+
+---
