@@ -5,11 +5,11 @@ import styles from "../../../assets/components/layout/Logo/index.module.less"
 const Logo:React.FC<{}> = () => {
 
     return(
-        <Image style={{ width: 120, height: 80 }}
+        <a href={"/"}><Image style={{ width: 120, height: 80 }}
                 placeholderImg="logo.svg"
                 src="public/logo.svg"
                className={styles.logo}
-        />
+        /></a>
     )
 }
 
